@@ -14,7 +14,8 @@ class _LoaderWeatherScreenState extends State<LoaderWeatherScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
     appBar: AppBar(
-      title: Text('Meteo App'),
+      foregroundColor: Colors.white,
+      title: Text('Meteo App',),
       backgroundColor: appliColor,
       centerTitle: true,
     ),

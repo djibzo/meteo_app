@@ -20,7 +20,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: appliColor,
-        title: Text(widget.title),
+        centerTitle: true,
+        title: Text(widget.title,style: TextStyle(color: Colors.white,),),
       ),
       body:  Center(
 
@@ -28,19 +29,65 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             const Padding(
-              padding: EdgeInsets.only(top: 80),
+              padding: EdgeInsets.only(top: 80,bottom: 10),
               child: Text(
                 'Bienvenue dans Meteo App ! ',style: TextStyle(fontSize: 30),
               ),
             ),
-            IconButton(
-              onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return LoaderWeatherScreen();
-                  },));
-                },
-                icon: Icon(Icons.start,size: 40,color: appliColor,),
-            )
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Stack(
+                children: <Widget>[
+                  Positioned.fill(
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: <Color>[
+                            Color(0xFF0D47A1),
+                            Color(0xFF1976D2),
+                            Color(0xFF42A5F5),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.all(18.0),
+                      textStyle: const TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                        return LoaderWeatherScreen();
+                      },));
+                    },
+                    child: const Text('C\'est parti'),
+                  ),
+                ],
+              ),
+            ),
+            // TextButton(
+            //   style: TextButton.styleFrom(
+            //     foregroundColor: appliColor,
+            //     padding: const EdgeInsets.all(16.0),
+            //     textStyle: const TextStyle(fontSize: 20),
+            //   ),
+            //   onPressed: () {
+            //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+            //       return LoaderWeatherScreen();
+            //     },));
+            //   },
+            //   child: const Text('C\'est parti !'),
+            // ),
+            // IconButton(
+            //   onPressed: () {
+            //       Navigator.push(context, MaterialPageRoute(builder: (context) {
+            //         return LoaderWeatherScreen();
+            //       },));
+            //     },
+            //     icon: Icon(Icons.start,size: 40,color: appliColor,),
+            // )
           ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
