@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
 
       ),
-        home: const HomeScreen(title: 'Flutter Demo Home Page'),
+        home: const HomeScreen(title: 'Meteo App'),
       );
 
   }
