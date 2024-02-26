@@ -23,8 +23,15 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
         title: Text(widget.title,style: TextStyle(color: Colors.white,),),
       ),
-      body:  Center(
-
+      body:
+        Container(
+        decoration: BoxDecoration(
+        image: DecorationImage(
+        image: AssetImage('assets/background.jpeg'),
+        fit: BoxFit.cover,
+        ),
+        ),
+        child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
@@ -90,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
             // )
           ],
         ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),),// This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
