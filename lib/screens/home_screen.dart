@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:meteo_app/utils/consts.dart';
 
@@ -38,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const Padding(
               padding: EdgeInsets.only(top: 80,bottom: 10),
               child: Text(
-                'Bienvenue dans Meteo App ! ',style: TextStyle(fontSize: 30),
+                'Bienvenue dans Meteo App ! ',style: TextStyle(fontSize: 30,color: Colors.white,fontWeight: FontWeight.w500,),
               ),
             ),
             ClipRRect(
