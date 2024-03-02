@@ -2,10 +2,12 @@ import 'package:circular_seek_bar/circular_seek_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meteo_app/utils/consts.dart';
+import 'package:provider/provider.dart';
+
+import '../services/weather_provider.dart';
 
 class LoaderWeatherScreen extends StatefulWidget {
   const LoaderWeatherScreen({super.key});
-
   @override
   State<LoaderWeatherScreen> createState() => _LoaderWeatherScreenState();
 }
@@ -13,6 +15,8 @@ class LoaderWeatherScreen extends StatefulWidget {
 class _LoaderWeatherScreenState extends State<LoaderWeatherScreen> {
   @override
   Widget build(BuildContext context) {
+    //final weatherData = Provider.of<WeatherProvider>(context).weatherData;
+    final weatherProvider = Provider.of<WeatherProvider>(context, listen: false);
     final ValueNotifier<double> valueNotifier = ValueNotifier(0);
     return Scaffold(
     appBar: AppBar(
