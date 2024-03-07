@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:circular_seek_bar/circular_seek_bar.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:meteo_app/screens/details_screen.dart';
 
@@ -34,6 +35,7 @@ class _LoaderWeatherScreenState extends State<LoaderWeatherScreen> {
   late Timer timer;
   int currentCityIndex = 0;
   int currentWaitMessageIndex = 0;
+  bool showButton = false;
 
   @override
   void initState() {
@@ -51,6 +53,7 @@ class _LoaderWeatherScreenState extends State<LoaderWeatherScreen> {
           _currentIndex++;
         } else {
           timer.cancel(); // Arrête le timer une fois que toutes les villes ont été affichées
+          showButton = true; // Affiche le bouton "Recommencer"
         }
       });
     });
@@ -95,6 +98,15 @@ class _LoaderWeatherScreenState extends State<LoaderWeatherScreen> {
     }
   }
 
+  void restart() {
+    setState(() {
+      _currentIndex = 0;
+      showButton = false;
+    });
+    startWeatherUpdates();
+    _startLTTimer();
+  }
+
   @override
   void dispose() {
     timer.cancel();
@@ -116,51 +128,61 @@ class _LoaderWeatherScreenState extends State<LoaderWeatherScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 20.0),
-            child: Container(
-              width: double.infinity,
-              height: 250,
-              child: CircularSeekBar(
-                animDurationMillis: 60000,
-                progress: 100,
-                barWidth: 8,
-                startAngle: 45,
-                sweepAngle: 270,
-                strokeCap: StrokeCap.butt,
-                progressGradientColors: const [
-                  Colors.red,
-                  Colors.orange,
-                  Colors.yellow,
-                  Colors.green,
-                  Colors.blue,
-                  Colors.indigo,
-                  Colors.purple
-                ],
-                innerThumbRadius: 5,
-                innerThumbStrokeWidth: 3,
-                innerThumbColor: Colors.white,
-                outerThumbRadius: 5,
-                outerThumbStrokeWidth: 10,
-                outerThumbColor: Colors.blueAccent,
-                dashWidth: 1,
-                dashGap: 2,
-                animation: true,
-                valueNotifier: valueNotifier,
-                width: 500,
-                height: 500,
-                child: Center(
-                  child: ValueListenableBuilder<double>(
-                    valueListenable: valueNotifier,
-                    builder: (_, double value, __) => Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('${value.round()}', style: const TextStyle(color: Colors.grey)),
-                        const Text('Progression', style: TextStyle(color: Colors.grey)),
-                        Text(waitMessages[currentWaitMessageIndex], style: TextStyle(color: Colors.grey)),
-                      ],
+            child: Visibility(
+              visible: !showButton,
+              child: Container(
+                width: double.infinity,
+                height: 250,
+                child: CircularSeekBar(
+                  animDurationMillis: 60000,
+                  progress: 100,
+                  barWidth: 8,
+                  startAngle: 45,
+                  sweepAngle: 270,
+                  strokeCap: StrokeCap.butt,
+                  progressGradientColors: const [
+                    Colors.red,
+                    Colors.orange,
+                    Colors.yellow,
+                    Colors.green,
+                    Colors.blue,
+                    Colors.indigo,
+                    Colors.purple
+                  ],
+                  innerThumbRadius: 5,
+                  innerThumbStrokeWidth: 3,
+                  innerThumbColor: Colors.white,
+                  outerThumbRadius: 5,
+                  outerThumbStrokeWidth: 10,
+                  outerThumbColor: Colors.blueAccent,
+                  dashWidth: 1,
+                  dashGap: 2,
+                  animation: true,
+                  valueNotifier: valueNotifier,
+                  width: 500,
+                  height: 500,
+                  child: Center(
+                    child: ValueListenableBuilder<double>(
+                      valueListenable: valueNotifier,
+                      builder: (_, double value, __) => Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('${value.round()}', style: const TextStyle(color: Colors.grey)),
+                          const Text('Progression', style: TextStyle(color: Colors.grey)),
+                          Text(waitMessages[currentWaitMessageIndex], style: TextStyle(color: Colors.grey)),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
+            ),
+          ),
+          Visibility(
+            visible: showButton,
+            child: ElevatedButton(
+              onPressed: restart,
+              child: const Text('Recommencer'),
             ),
           ),
           Expanded(
