@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:circular_seek_bar/circular_seek_bar.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:meteo_app/screens/details_screen.dart';
 
@@ -16,6 +15,12 @@ final List<Map<String, dynamic>> cities = [
   {'name': 'Paris', 'lat': 48.862725, 'lon': 2.287592, 'temperature': '', 'description': ''},
 ];
 
+final List<String> waitMessages = [
+  'Nous téléchargeons les données…',
+  'C’est presque fini…',
+  'Plus que quelques secondes \n avant d’avoir le résultat'
+];
+
 class LoaderWeatherScreen extends StatefulWidget {
   const LoaderWeatherScreen({Key? key}) : super(key: key);
 
@@ -25,16 +30,20 @@ class LoaderWeatherScreen extends StatefulWidget {
 
 class _LoaderWeatherScreenState extends State<LoaderWeatherScreen> {
   int _currentIndex = 0;
-  late  final ValueNotifier<double> valueNotifier = ValueNotifier(0);
+  late final ValueNotifier<double> valueNotifier = ValueNotifier(0);
   late Timer timer;
   int currentCityIndex = 0;
+  int currentWaitMessageIndex = 0;
+
   @override
   void initState() {
     super.initState();
     startAnimation();
     startWeatherUpdates();
+    startWaitMessages();
     _startLTTimer();
   }
+
   void _startLTTimer() {
     timer = Timer.periodic(Duration(seconds: 10), (timer) {
       setState(() {
@@ -45,7 +54,8 @@ class _LoaderWeatherScreenState extends State<LoaderWeatherScreen> {
         }
       });
     });
-  }//timer pour afficher les villes
+  }
+
   void startAnimation() async {
     for (int i = 0; i <= 100; i++) {
       await Future.delayed(const Duration(milliseconds: 600));
@@ -60,6 +70,14 @@ class _LoaderWeatherScreenState extends State<LoaderWeatherScreen> {
     });
   }
 
+  void startWaitMessages() {
+    timer = Timer.periodic(Duration(seconds: 6), (timer) {
+      setState(() {
+        currentWaitMessageIndex = (currentWaitMessageIndex + 1) % waitMessages.length;
+      });
+    });
+  }
+
   Future<void> fetchWeatherDataForCity(Map<String, dynamic> city) async {
     final apiKey = '1785471ad8877e665b6758bee3ce3971';
     final url = 'https://api.openweathermap.org/data/2.5/weather?lat=${city['lat']}&lon=${city['lon']}&appid=$apiKey&units=metric';
@@ -70,7 +88,7 @@ class _LoaderWeatherScreenState extends State<LoaderWeatherScreen> {
       setState(() {
         city['temperature'] = '${data['main']['temp']} °C';
         city['description'] = data['weather'][0]['description'];
-        city['humidity']='${data['main']['humidity']}';
+        city['humidity'] = '${data['main']['humidity']}';
       });
     } else {
       print('Failed to load weather data for ${city['name']}');
@@ -137,7 +155,7 @@ class _LoaderWeatherScreenState extends State<LoaderWeatherScreen> {
                       children: [
                         Text('${value.round()}', style: const TextStyle(color: Colors.grey)),
                         const Text('Progression', style: TextStyle(color: Colors.grey)),
-                        //ListView.builder(itemBuilder: itemBuilder) a experimenter pour le chargement des messages
+                        Text(waitMessages[currentWaitMessageIndex], style: TextStyle(color: Colors.grey)),
                       ],
                     ),
                   ),
@@ -150,7 +168,7 @@ class _LoaderWeatherScreenState extends State<LoaderWeatherScreen> {
               itemCount: _currentIndex + 1,
               itemBuilder: (context, index) {
                 final city = cities[index];
-                return  ListTile(
+                return ListTile(
                   title: Text('${city['name']}'),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,8 +181,8 @@ class _LoaderWeatherScreenState extends State<LoaderWeatherScreen> {
                     CityDetail cityDetail = CityDetail(
                       name: city['name'],
                       temperature: city['temperature'],
-                      description: city['description'], humidity: city['humidity'],
-
+                      description: city['description'],
+                      humidity: city['humidity'],
                     );
                     Navigator.push(context, MaterialPageRoute(builder: (context) {
                       return DetailScreen(cityDetail: cityDetail,);
