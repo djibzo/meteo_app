@@ -9,7 +9,7 @@ import 'package:meteo_app/screens/details_screen.dart';
 import '../utils/CityDetail.dart';
 
 final List<Map<String, dynamic>> cities = [
-  {'name': 'Dakar', 'lat': 14.499454, 'lon':-14.445561499999997 , 'temperature': '', 'description': ''},
+  {'name': 'Dakar', 'lat': 14.693425, 'lon':-17.447938 , 'temperature': '', 'description': ''},
   {'name': 'Kolda', 'lat': 12.88333, 'lon': -14.95, 'temperature': '', 'description': ''},
   {'name': 'Montréal', 'lat': 45.5031824, 'lon': -73.5698065, 'temperature': '', 'description': ''},
   {'name': 'Abidjan', 'lat': 5.320357, 'lon': -4.016107, 'temperature': '', 'description': ''},
@@ -52,7 +52,7 @@ class _LoaderWeatherScreenState extends State<LoaderWeatherScreen> {
         if (_currentIndex < cities.length - 1) {
           _currentIndex++;
         } else {
-          timer.cancel(); // Arrête le timer une fois que toutes les villes ont été affichées
+          timer.cancel();
           showButton = true; // Affiche le bouton "Recommencer"
         }
       });
@@ -117,7 +117,7 @@ class _LoaderWeatherScreenState extends State<LoaderWeatherScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Weather App'),
+        title: const Text('Meteo App'),
         centerTitle: true,
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
@@ -168,7 +168,6 @@ class _LoaderWeatherScreenState extends State<LoaderWeatherScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text('${value.round()}', style: const TextStyle(color: Colors.grey)),
-                          const Text('Progression', style: TextStyle(color: Colors.grey)),
                           Text(waitMessages[currentWaitMessageIndex], style: TextStyle(color: Colors.grey)),
                         ],
                       ),
@@ -181,6 +180,7 @@ class _LoaderWeatherScreenState extends State<LoaderWeatherScreen> {
           Visibility(
             visible: showButton,
             child: ElevatedButton(
+
               onPressed: restart,
               child: const Text('Recommencer'),
             ),
@@ -190,26 +190,47 @@ class _LoaderWeatherScreenState extends State<LoaderWeatherScreen> {
               itemCount: _currentIndex + 1,
               itemBuilder: (context, index) {
                 final city = cities[index];
-                return ListTile(
-                  title: Text('${city['name']}'),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Temperature: ${city['temperature']}'),
-                      Text('Couverture nuageuse: ${city['description']}'),
-                    ],
+                return Container(
+                  margin: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.lightBlue,
+                    //shape: BoxShape.circle
                   ),
-                  onTap: () {
-                    CityDetail cityDetail = CityDetail(
-                      name: city['name'],
-                      temperature: city['temperature'],
-                      description: city['description'],
-                      humidity: city['humidity'],
-                    );
-                    Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      return DetailScreen(cityDetail: cityDetail,);
-                    },));
-                  },
+                  child: ListTile(
+                    textColor: Colors.white,
+                    title: Row(
+                      children: [
+                        Icon(Icons.pin_drop_rounded,color: Colors.white,),
+                        Text("  "),
+                        Text('${city['name']}',style: TextStyle(fontSize: 20),),
+                      ],
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Temperature: ${city['temperature']}'),
+                        Row(
+                          children: [
+                            Icon(Icons.cloud,color: Colors.white,),
+                            Text("  "),
+                            Text('Couverture nuageuse: ${city['description']}'),
+                          ],
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      CityDetail cityDetail = CityDetail(
+                        name: city['name'],
+                        temperature: city['temperature'],
+                        description: city['description'],
+                        humidity: city['humidity'],
+                      );
+                      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                        return DetailScreen(cityDetail: cityDetail,);
+                      },));
+                    },
+                  ),
                 );
               },
             ),
